@@ -76,7 +76,7 @@ def control_get_book(user, item):
 
 
 def can_borrow_item(item):
-    item_id_ = item.item_id + "  "
+    item_id_ = item.item_id
     query = "select * from " \
             "envanter where kutuphanede_mi=TRUE " \
             "and id::int={id}".format(id=item_id_)
@@ -127,7 +127,7 @@ def get_expired_items(user):
 
 
 def borrow_item(user, item_id):
-    item_id_ = item_id + "  "
+    item_id_ = item_id
     user_id = user.user_id
     now = datetime.now()
     formatted_date = now.strftime('%Y-%m-%d')
@@ -140,7 +140,7 @@ def borrow_item(user, item_id):
 
 
 def reserve_item(user, item):
-    item_id_ = item.item_id + "  "
+    item_id_ = item.item_id
     user_id = user.user_id
     reserve_user = find_owner_reserve(item)
     query = "insert into rezerve values ({item_id}, {owner_id}, {goes_to})".format(item_id=item_id_,
@@ -172,7 +172,7 @@ def is_balance_enough(card_id, amount):
 
 
 def is_item_reserved(item_id):
-    item_id_ = item_id + "  "
+    item_id_ = item_id
     query = "select reserve_mi from odunc where obje_id::int={id}".format(id=item_id_)
     cursor.execute(query)
     result = cursor.fetchone()
@@ -182,7 +182,7 @@ def is_item_reserved(item_id):
 
 # itemi rezerve eden kullanıcıyı bulmak için
 def find_email_reserve(item_id):
-    item_id_ = item_id + "  "
+    item_id_ = item_id
     query = "select kime_gidecek_id from rezerve where materyal_id::int={id}".format(id=item_id_)
     cursor.execute(query)
     result = cursor.fetchone()
@@ -194,7 +194,7 @@ def find_email_reserve(item_id):
 
 
 def find_owner_reserve(item):
-    item_id_ = item.item_id + "  "
+    item_id_ = item.item_id
     query = "select alan_id from odunc where obje_id::int={id}".format(id=item_id_)
     cursor.execute(query)
     result = cursor.fetchone()
@@ -227,21 +227,21 @@ def get_reserved_items(user):
 
 
 def remove_from_belonging(item_id):
-    item_id_ = item_id + "  "
+    item_id_ = item_id
     query = "delete from odunc where obje_id::int={id}".format(id=item_id_)
     cursor.execute(query)
     connection.commit()
 
 
 def remove_from_reserve(item_id):
-    item_id_ = item_id + "  "
+    item_id_ = item_id
     query = "delete from rezerve where materyal_id::int={id}".format(id=item_id_)
     cursor.execute(query)
     connection.commit()
 
 
 def is_still_borrowed(item_id):
-    item_id_ = item_id + "  "
+    item_id_ = item_id
     query = "select * from rezerve where kac_gun_kaldi is not null and " \
             "materyal_id::int={id}".format(id=int(item_id_))
     cursor.execute(query)
@@ -250,7 +250,7 @@ def is_still_borrowed(item_id):
 
 
 def have_debt(item_id):
-    item_id_ = item_id + "  "
+    item_id_ = item_id
     query = "select * from borclar where materyal_id::int={id}".format(id=item_id_)
     cursor.execute(query)
     result = cursor.fetchone()
@@ -258,7 +258,7 @@ def have_debt(item_id):
 
 
 def delete_from_debts(item_id):
-    item_id_ = item_id + "  "
+    item_id_ = item_id
     query = "delete from borclar where materyal_id::int={id}".format(id=item_id_)
     cursor.execute(query)
     connection.commit()
@@ -285,7 +285,7 @@ def update_debts():
     for row in result:
         debt_list.append(row)
     for item in debt_list:
-        item_id = item[1] + "  "  # materyal id
+        item_id = item[1] # materyal id
         query = "select * from odunc where obje_id::int={item_id}".format(item_id=item_id)
         cursor.execute(query)
         result1 = cursor.fetchone()
@@ -305,7 +305,7 @@ def update_reserves():
         reserve_list.append(row)
     for item in reserve_list:
         date = item[0]
-        item_id_ = item[1] + "  "
+        item_id_ = item[1]
         left_day = 5 - int((datetime.date(datetime.now()) - date).days)
         if left_day <= 0:
             query = "delete from rezerve where materyal_id::int={id}".format(id=item_id_)
